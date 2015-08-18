@@ -1,45 +1,38 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Laravel</title>
+@extends('layouts.master')
 
-        <link href="//fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+@section('sidebar')
+<h1 class="text-center">Find A Pickup Game</h1>
+<div class="container" ng-controller="HomeController">
 
-        <style>
-            html, body {
-                height: 100%;
-            }
+<map class="map" center="current-location" zoom="4" ng-init="getGames()" >
+<marker id="@{{game.id}}" position="@{{game.lat}},@{{game.lng}}" on-click="showInfoWindow(event, '@{{bar+game.id}}')" ng-repeat="game in games">
 
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato';
-            }
+<info-window id="@{{bar+game.id}}" visible-on-marker="@{{game.id}}">
+<div ng-non-bindable="">
+<div id="siteNotice"></div>
+<h1 id="firstHeading" class="firstHeading">@{{game.id}}</h1>
+<div id="bodyContent">
+<p>
+  Created: @{{game.created_at}}
+   <a href="http://maps.google.com/?saddr=@{{lat}},@{{lng}}&daddr=@{{game.lat}},@{{game.lng}}" class="btn btn-info">Get Directions</a>
+</p>
+</div>
+</div>
+</info-window>
 
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
+</marker>
 
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
+</map>
 
-            .title {
-                font-size: 96px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">Laravel 5</div>
-            </div>
-        </div>
-    </body>
-</html>
+</div>
+@endsection
+
+@section('content')
+<form role="form">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input  class="form-control" id="name">
+  </div>
+  <button type="submit" class="btn btn-success">Add Game</button>
+</form>
+@endsection

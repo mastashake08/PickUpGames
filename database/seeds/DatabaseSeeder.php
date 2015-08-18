@@ -12,10 +12,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Model::unguard();
+        //Model::unguard();
 
         // $this->call(UserTableSeeder::class);
 
-        Model::reguard();
+        //Model::reguard();\
+
+        factory(App\Game::class, 50)->create();
     }
 }

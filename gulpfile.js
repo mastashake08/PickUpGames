@@ -14,3 +14,13 @@ var elixir = require('laravel-elixir');
 elixir(function(mix) {
     mix.sass('app.scss');
 });
+
+elixir(function(mix) {
+    mix.scripts([
+      '../../bower_components/angular/angular.js',
+      '../../bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js',
+        '../../bower_components/ngmap/build/scripts/ng-map.js',
+        'app.js'
+
+    ]);
+});
