@@ -39,10 +39,11 @@ class GameController extends Controller
     public function store(Request $request)
     {
         //
-        return Game::Create([
+         $event = Game::Create([
             'name' => $request->input('name'),
             'description' => $request->input('description')
             ]);
+         event(App\Events\GameCreated($game));
     }
 
     /**
