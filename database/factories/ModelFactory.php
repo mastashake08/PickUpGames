@@ -1,5 +1,5 @@
 <?php
-
+use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -16,6 +16,9 @@ $factory->define(App\Game::class, function (Faker\Generator $faker) {
     return [
         'lat' => $faker->latitude,
         'lng' => $faker->longitude,
+        'name' => $faker->name,
+        'description' => $faker->text,
+ 	
 
     ];
 });

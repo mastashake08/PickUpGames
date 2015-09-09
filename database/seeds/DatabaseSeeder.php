@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -19,5 +20,6 @@ class DatabaseSeeder extends Seeder
         //Model::reguard();\
 
         factory(App\Game::class, 50)->create();
+        echo 'SUCCESS! /n';
     }
 }

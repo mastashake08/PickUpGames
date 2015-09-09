@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.4
+ * @license AngularJS v1.4.5
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.4/' +
+    message += '\nhttp://errors.angularjs.org/1.4.5/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2374,11 +2374,11 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.4',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.5',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
-  dot: 4,
-  codeName: 'pylon-requirement'
+  dot: 5,
+  codeName: 'permanent-internship'
 };
 
 
@@ -2583,7 +2583,7 @@ function publishExternalAPI(angular) {
  * - [`html()`](http://api.jquery.com/html/)
  * - [`next()`](http://api.jquery.com/next/) - Does not support selectors
  * - [`on()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
- * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces or selectors
+ * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces, selectors or event object as parameter
  * - [`one()`](http://api.jquery.com/one/) - Does not support namespaces or selectors
  * - [`parent()`](http://api.jquery.com/parent/) - Does not support selectors
  * - [`prepend()`](http://api.jquery.com/prepend/)
@@ -2597,7 +2597,7 @@ function publishExternalAPI(angular) {
  * - [`text()`](http://api.jquery.com/text/)
  * - [`toggleClass()`](http://api.jquery.com/toggleClass/)
  * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers.
- * - [`unbind()`](http://api.jquery.com/unbind/) - Does not support namespaces
+ * - [`unbind()`](http://api.jquery.com/unbind/) - Does not support namespaces or event object as parameter
  * - [`val()`](http://api.jquery.com/val/)
  * - [`wrap()`](http://api.jquery.com/wrap/)
  *
@@ -5392,10 +5392,10 @@ var $CoreAnimateCssProvider = function() {
         return this.getPromise().then(f1,f2);
       },
       'catch': function(f1) {
-        return this.getPromise().catch(f1);
+        return this.getPromise()['catch'](f1);
       },
       'finally': function(f1) {
-        return this.getPromise().finally(f1);
+        return this.getPromise()['finally'](f1);
       }
     };
 
@@ -14917,7 +14917,7 @@ function $$RAFProvider() { //rAF
                                $window.webkitCancelRequestAnimationFrame;
 
     var rafSupported = !!requestAnimationFrame;
-    var rafFn = rafSupported
+    var raf = rafSupported
       ? function(fn) {
           var id = requestAnimationFrame(fn);
           return function() {
@@ -14931,47 +14931,9 @@ function $$RAFProvider() { //rAF
           };
         };
 
-    queueFn.supported = rafSupported;
+    raf.supported = rafSupported;
 
-    var cancelLastRAF;
-    var taskCount = 0;
-    var taskQueue = [];
-    return queueFn;
-
-    function flush() {
-      for (var i = 0; i < taskQueue.length; i++) {
-        var task = taskQueue[i];
-        if (task) {
-          taskQueue[i] = null;
-          task();
-        }
-      }
-      taskCount = taskQueue.length = 0;
-    }
-
-    function queueFn(asyncFn) {
-      var index = taskQueue.length;
-
-      taskCount++;
-      taskQueue.push(asyncFn);
-
-      if (index === 0) {
-        cancelLastRAF = rafFn(flush);
-      }
-
-      return function cancelQueueFn() {
-        if (index >= 0) {
-          taskQueue[index] = null;
-          index = null;
-
-          if (--taskCount === 0 && cancelLastRAF) {
-            cancelLastRAF();
-            cancelLastRAF = null;
-            taskQueue.length = 0;
-          }
-        }
-      };
-    }
+    return raf;
   }];
 }
 
@@ -20328,7 +20290,6 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
        </script>
        <style>
         .my-form {
-          -webkit-transition:all linear 0.5s;
           transition:all linear 0.5s;
           background: transparent;
         }
@@ -22717,7 +22678,6 @@ function classDirective(name, selector) {
      </file>
      <file name="style.css">
        .base-class {
-         -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
          transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
        }
 
@@ -23892,7 +23852,6 @@ forEach(
       }
 
       .animate-if.ng-enter, .animate-if.ng-leave {
-        -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
         transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
       }
 
@@ -24041,7 +24000,6 @@ var ngIfDirective = ['$animate', function($animate) {
       }
 
       .slide-animate.ng-enter, .slide-animate.ng-leave {
-        -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
         transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
 
         position:absolute;
@@ -25380,7 +25338,6 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
        </script>
        <style>
          .my-input {
-           -webkit-transition:all linear 0.5s;
            transition:all linear 0.5s;
            background: transparent;
          }
@@ -27054,7 +27011,6 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
       .animate-repeat.ng-move,
       .animate-repeat.ng-enter,
       .animate-repeat.ng-leave {
-        -webkit-transition:all linear 0.5s;
         transition:all linear 0.5s;
       }
 
@@ -27451,9 +27407,7 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
         background: white;
       }
 
-      .animate-show.ng-hide-add.ng-hide-add-active,
-      .animate-show.ng-hide-remove.ng-hide-remove-active {
-        -webkit-transition: all linear 0.5s;
+      .animate-show.ng-hide-add, .animate-show.ng-hide-remove {
         transition: all linear 0.5s;
       }
 
@@ -27610,7 +27564,6 @@ var ngShowDirective = ['$animate', function($animate) {
     </file>
     <file name="animations.css">
       .animate-hide {
-        -webkit-transition: all linear 0.5s;
         transition: all linear 0.5s;
         line-height: 20px;
         opacity: 1;
@@ -27809,7 +27762,6 @@ var ngStyleDirective = ngDirective(function(scope, element, attr) {
       }
 
       .animate-switch.ng-animate {
-        -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
         transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
 
         position:absolute;
@@ -28150,31 +28102,162 @@ var SelectController =
  * @description
  * HTML `SELECT` element with angular data-binding.
  *
- * In many cases, `ngRepeat` can be used on `<option>` elements instead of {@link ng.directive:ngOptions
- * ngOptions} to achieve a similar result. However, `ngOptions` provides some benefits such as reducing
- * memory and increasing speed by not creating a new scope for each repeated instance, as well as providing
- * more flexibility in how the `<select>`'s model is assigned via the `select` **`as`** part of the
- * comprehension expression.
+ * The `select` directive is used together with {@link ngModel `ngModel`} to provide data-binding
+ * between the scope and the `<select>` control (including setting default values).
+ * Ìt also handles dynamic `<option>` elements, which can be added using the {@link ngRepeat `ngRepeat}` or
+ * {@link ngOptions `ngOptions`} directives.
  *
- * When an item in the `<select>` menu is selected, the array element or object property
- * represented by the selected option will be bound to the model identified by the `ngModel`
- * directive.
+ * When an item in the `<select>` menu is selected, the value of the selected option will be bound
+ * to the model identified by the `ngModel` directive. With static or repeated options, this is
+ * the content of the `value` attribute or the textContent of the `<option>`, if the value attribute is missing.
+ * If you want dynamic value attributes, you can use interpolation inside the value attribute.
  *
- * If the viewValue contains a value that doesn't match any of the options then the control
- * will automatically add an "unknown" option, which it then removes when this is resolved.
+ * <div class="alert alert-warning">
+ * Note that the value of a `select` directive used without `ngOptions` is always a string.
+ * When the model needs to be bound to a non-string value, you must either explictly convert it
+ * using a directive (see example below) or use `ngOptions` to specify the set of options.
+ * This is because an option element can only be bound to string values at present.
+ * </div>
+ *
+ * If the viewValue of `ngModel` does not match any of the options, then the control
+ * will automatically add an "unknown" option, which it then removes when the mismatch is resolved.
  *
  * Optionally, a single hard-coded `<option>` element, with the value set to an empty string, can
  * be nested into the `<select>` element. This element will then represent the `null` or "not selected"
  * option. See example below for demonstration.
  *
  * <div class="alert alert-info">
- * The value of a `select` directive used without `ngOptions` is always a string.
- * When the model needs to be bound to a non-string value, you must either explictly convert it
- * using a directive (see example below) or use `ngOptions` to specify the set of options.
- * This is because an option element can only be bound to string values at present.
+ * In many cases, `ngRepeat` can be used on `<option>` elements instead of {@link ng.directive:ngOptions
+ * ngOptions} to achieve a similar result. However, `ngOptions` provides some benefits, such as
+ * more flexibility in how the `<select>`'s model is assigned via the `select` **`as`** part of the
+ * comprehension expression, and additionally in reducing memory and increasing speed by not creating
+ * a new scope for each repeated instance.
  * </div>
  *
- * ### Example (binding `select` to a non-string value)
+ *
+ * @param {string} ngModel Assignable angular expression to data-bind to.
+ * @param {string=} name Property name of the form under which the control is published.
+ * @param {string=} required Sets `required` validation error key if the value is not entered.
+ * @param {string=} ngRequired Adds required attribute and required validation constraint to
+ * the element when the ngRequired expression evaluates to true. Use ngRequired instead of required
+ * when you want to data-bind to the required attribute.
+ * @param {string=} ngChange Angular expression to be executed when selected option(s) changes due to user
+ *    interaction with the select element.
+ * @param {string=} ngOptions sets the options that the select is populated with and defines what is
+ * set on the model on selection. See {@link ngOptions `ngOptions`}.
+ *
+ * @example
+ * ### Simple `select` elements with static options
+ *
+ * <example name="static-select" module="staticSelect">
+ * <file name="index.html">
+ * <div ng-controller="ExampleController">
+ *   <form name="myForm">
+ *     <label for="singleSelect"> Single select: </label><br>
+ *     <select name="singleSelect" ng-model="data.singleSelect">
+ *       <option value="option-1">Option 1</option>
+ *       <option value="option-2">Option 2</option>
+ *     </select><br>
+ *
+ *     <label for="singleSelect"> Single select with "not selected" option and dynamic option values: </label><br>
+ *     <select name="singleSelect" ng-model="data.singleSelect">
+ *       <option value="">---Please select---</option> <!-- not selected / blank option -->
+ *       <option value="{{data.option1}}">Option 1</option> <!-- interpolation -->
+ *       <option value="option-2">Option 2</option>
+ *     </select><br>
+ *     <button ng-click="forceUnknownOption()">Force unknown option</button><br>
+ *     <tt>singleSelect = {{data.singleSelect}}</tt>
+ *
+ *     <hr>
+ *     <label for="multipleSelect"> Multiple select: </label><br>
+ *     <select name="multipleSelect" id="multipleSelect" ng-model="data.multipleSelect" multiple>
+ *       <option value="option-1">Option 1</option>
+ *       <option value="option-2">Option 2</option>
+ *       <option value="option-3">Option 3</option>
+ *     </select><br>
+ *     <tt>multipleSelect = {{data.multipleSelect}}</tt><br/>
+ *   </form>
+ * </div>
+ * </file>
+ * <file name="app.js">
+ *  angular.module('staticSelect', [])
+ *    .controller('ExampleController', ['$scope', function($scope) {
+ *      $scope.data = {
+ *       singleSelect: null,
+ *       multipleSelect: [],
+ *       option1: 'option-1',
+ *      };
+ *
+ *      $scope.forceUnknownOption = function() {
+ *        $scope.data.singleSelect = 'nonsense';
+ *      };
+ *   }]);
+ * </file>
+ *</example>
+ *
+ * ### Using `ngRepeat` to generate `select` options
+ * <example name="ngrepeat-select" module="ngrepeatSelect">
+ * <file name="index.html">
+ * <div ng-controller="ExampleController">
+ *   <form name="myForm">
+ *     <label for="repeatSelect"> Repeat select: </label>
+ *     <select name="repeatSelect" ng-model="data.repeatSelect">
+ *       <option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>
+ *     </select>
+ *   </form>
+ *   <hr>
+ *   <tt>repeatSelect = {{data.repeatSelect}}</tt><br/>
+ * </div>
+ * </file>
+ * <file name="app.js">
+ *  angular.module('ngrepeatSelect', [])
+ *    .controller('ExampleController', ['$scope', function($scope) {
+ *      $scope.data = {
+ *       singleSelect: null,
+ *       availableOptions: [
+ *         {id: '1', name: 'Option A'},
+ *         {id: '2', name: 'Option B'},
+ *         {id: '3', name: 'Option C'}
+ *       ],
+ *      };
+ *   }]);
+ * </file>
+ *</example>
+ *
+ *
+ * ### Using `select` with `ngOptions` and setting a default value
+ * See the {@link ngOptions ngOptions documentation} for more `ngOptions` usage examples.
+ *
+ * <example name="select-with-default-values" module="defaultValueSelect">
+ * <file name="index.html">
+ * <div ng-controller="ExampleController">
+ *   <form name="myForm">
+ *     <label for="mySelect">Make a choice:</label>
+ *     <select name="mySelect" id="mySelect"
+ *       ng-options="option.name for option in data.availableOptions track by option.id"
+ *       ng-model="data.selectedOption"></select>
+ *   </form>
+ *   <hr>
+ *   <tt>option = {{data.selectedOption}}</tt><br/>
+ * </div>
+ * </file>
+ * <file name="app.js">
+ *  angular.module('defaultValueSelect', [])
+ *    .controller('ExampleController', ['$scope', function($scope) {
+ *      $scope.data = {
+ *       availableOptions: [
+ *         {id: '1', name: 'Option A'},
+ *         {id: '2', name: 'Option B'},
+ *         {id: '3', name: 'Option C'}
+ *       ],
+ *       selectedOption: {id: '3', name: 'Option C'} //This sets the default value of the select in the ui
+ *       };
+ *   }]);
+ * </file>
+ *</example>
+ *
+ *
+ * ### Binding `select` to a non-string value via `ngModel` parsing / formatting
  *
  * <example name="select-with-non-string-options" module="nonStringSelect">
  *   <file name="index.html">
@@ -28408,8 +28491,9 @@ var patternDirective = function() {
         ctrl.$validate();
       });
 
-      ctrl.$validators.pattern = function(value) {
-        return ctrl.$isEmpty(value) || isUndefined(regexp) || regexp.test(value);
+      ctrl.$validators.pattern = function(modelValue, viewValue) {
+        // HTML5 pattern constraint validates the input value, so we validate the viewValue
+        return ctrl.$isEmpty(viewValue) || isUndefined(regexp) || regexp.test(viewValue);
       };
     }
   };
@@ -28684,6 +28768,10 @@ angular.module('ngMap', []);
               return new google.maps.LatLng(output[0], output[1]);
             }
           }
+          else if (output === Object(output)) { // JSON is an object (not array or null)
+            // check for nested hashes and convert to Google API options
+            output = getOptions(output, options);
+          }
         } catch(err2) {
           // 3. Object Expression. i.e. LatLng(80,-49)
           if (input.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
@@ -28711,6 +28799,13 @@ angular.module('ngMap', []);
               } else {
                 output = google.maps[capitalizedKey][input];
               }
+            } catch(e) {
+              output = input;
+            }
+          // 6. Date Object as ISO String i.e. "2015-08-12T06:12:40.858Z"
+          } else if (input.match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/)) {
+            try {
+              output = new Date(input);
             } catch(e) {
               output = input;
             }
@@ -28780,7 +28875,12 @@ angular.module('ngMap', []);
           } else if (key.match(/ControlOptions$/)) { // skip controlOptions
             continue;
           } else {
-            options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+            // nested conversions need to be typechecked (non-strings are fully converted)
+            if (typeof attrs[key] !== 'string') {
+              options[key] = attrs[key];
+            } else {
+              options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+            }
           }
         } // if (attrs[key])
       } // for(var key in attrs)
@@ -29083,7 +29183,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name bicycling-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -29134,7 +29234,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name cloud-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -29184,8 +29284,8 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name custom-control
- * @requires Attr2Options 
- * @requires $compile
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $compile {service} AngularJS $compile service
  * @description 
  *   Build custom control and set to the map with position
  *   
@@ -29193,9 +29293,9 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element
  *
- * @param {String} position position of this control
+ * @attr {String} position position of this control
  *        i.e. TOP_RIGHT
- * @param {Number} index index of the control
+ * @attr {Number} index index of the control
  * @example
  *
  * Example: 
@@ -29250,6 +29350,178 @@ angular.module('ngMap', []);
 
 /**
  * @ngdoc directive
+ * @memberof ngmap
+ * @name custom-marker
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $compile {service} AngularJS $compile service
+ * @param $timeout {service} AngularJS $timeout
+ * @description 
+ *   Marker with html
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @attr {String} position required, position on map
+ * @attr {Number} z-index optional
+ * @attr {Boolean} visible optional
+ * @example
+ *
+ * Example: 
+ *   <map center="41.850033,-87.6500523" zoom="3">
+ *     <custom-marker position="41.850033,-87.6500523">
+ *       <div>
+ *         <b>Home</b>
+ *       </div>
+ *     </custom-marker>
+ *   </map>
+ *
+ */
+(function() {
+  'use strict';
+  var parser, $compile, $timeout;
+
+  var cAbortEvent = function (e) {
+    e.preventDefault && e.preventDefault();
+    e.cancelBubble = true;
+    e.stopPropagation && e.stopPropagation();
+  }; 
+
+  var CustomMarker = function(options) {
+    options = options || {};
+
+    this.el = document.createElement('div');
+    this.el.style.display = 'inline-block';
+    this.visible = true; for (var key in options) {
+     this[key] = options[key];
+    }
+  };
+
+  var setCustomMarker = function() {
+
+    CustomMarker.prototype = new google.maps.OverlayView();
+
+    CustomMarker.prototype.setContent = function(html, scope) {
+      this.html = html;
+      if (scope) {
+        var compiledEl = $compile(html)(scope);
+        var customMarkerEl = compiledEl[0];
+        var me = this;
+        $timeout(function() {
+          me.content = customMarkerEl.innerHTML;
+          me.el.innerHTML = me.content;
+        });
+      } else {
+        this.content = html;
+        this.el.innerHTML = this.content;
+      }
+      this.el.style.position = 'relative';
+      this.el.className = 'custom-marker';
+    };
+
+    CustomMarker.prototype.setPosition = function(position) {
+      position && (this.position = position);
+      if (this.getProjection() && typeof this.position.lng == 'function') {
+        var posPixel = this.getProjection().fromLatLngToDivPixel(this.position);
+        var x = Math.round(posPixel.x - (this.el.offsetWidth/2));
+        var y = Math.round(posPixel.y - this.el.offsetHeight - 10); // 10px for anchor
+        this.el.style.left = x + "px";
+        this.el.style.top = y + "px";
+      }
+    };
+
+    CustomMarker.prototype.setZIndex = function(zIndex) {
+      zIndex && (this.zIndex = zIndex);
+      this.el.style.zIndex = this.zIndex;
+    };
+
+    CustomMarker.prototype.setVisible = function(visible) {
+      this.el.style.display = visible ? 'inline-block' : 'none';
+      this.visible = visible;
+    };
+
+    CustomMarker.prototype.addClass = function(className) {
+      var classNames = this.el.className.split(' ');
+      (classNames.indexOf(className) == -1) && classNames.push(className);
+      this.el.className = classNames.join(' ');
+    };
+    
+    CustomMarker.prototype.removeClass = function(className) {
+      var classNames = this.el.className.split(' ');
+      var index = classNames.indexOf(className);
+      (index > -1) && classNames.splice(index, 1);
+      this.el.className = classNames.join(' ');
+    };
+
+    CustomMarker.prototype.onAdd = function() {
+      this.getPanes().overlayMouseTarget.appendChild(this.el);
+    };
+    
+    CustomMarker.prototype.draw = function() {
+      this.setPosition();
+      this.setZIndex(this.zIndex);
+      this.setVisible(this.visible);
+    };
+    
+    CustomMarker.prototype.onRemove = function() {
+      this.el.parentNode.removeChild(this.el);
+      this.el = null;
+    };
+  };
+
+  var customMarkerDirective = function(Attr2Options, _$compile_, _$timeout_)  {
+    parser = Attr2Options;
+    $compile = _$compile_;
+    $timeout = _$timeout_;
+    setCustomMarker();
+
+    return {
+      restrict: 'E',
+      require: '^map',
+      link: function(scope, element, attrs, mapController) {
+
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered, scope);
+        var events = parser.getEvents(scope, filtered);
+
+        /**
+         * build a custom marker element
+         */
+        var removedEl = element[0].parentElement.removeChild(element[0]);
+        void 0;
+        var customMarker = new CustomMarker(options);
+        customMarker.setContent(removedEl.innerHTML, scope);
+        void 0;
+
+        void 0;
+        for (var eventName in events) {
+          google.maps.event.addDomListener(
+            customMarker.el, eventName, events[eventName]);
+        }
+        mapController.addObject('customMarkers', customMarker);
+
+        if (!(options.position instanceof google.maps.LatLng)) {
+          mapController.getGeoLocation(options.position).then(
+            function(latlng) {
+              customMarker.setPosition(latlng);
+            }
+          );
+        }
+
+        element.bind('$destroy', function() {
+          //Is it required to remove event listeners when DOM is removed?
+          mapController.deleteObject('customMarkers', marker);
+        });
+
+      } //link
+    }; // return
+  };// function
+  customMarkerDirective.$inject = ['Attr2Options', '$compile', '$timeout'];
+
+  angular.module('ngMap').directive('customMarker', customMarkerDirective);
+})();
+
+/**
+ * @ngdoc directive
  * @name directions
  * @description 
  *   Enable directions on map. e.g., origin, destination, draggable, waypoints, etc
@@ -29258,10 +29530,8 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element 
  *
- * @param {String} &lt;DirectionsRendererOptions> Any DirectionsRendererOptions, 
- *   https://developers.google.com/maps/documentation/javascript/reference#DirectionsRendererOptions
- * @param {String} &lt;DirectionsRequest Options> Any DirectionsRequest options, 
- *   https://developers.google.com/maps/documentation/javascript/reference#DirectionsRequest
+ * @attr {String} DirectionsRendererOptions [Any DirectionsRendererOptions](https://developers.google.com/maps/documentation/javascript/reference#DirectionsRendererOptions)
+ * @attr {String} DirectionsRequestOptions [Any DirectionsRequest options](https://developers.google.com/maps/documentation/javascript/reference#DirectionsRequest)
  * @example
  * Example: 
  *   <map zoom="14" center="37.7699298, -122.4469157">
@@ -29290,7 +29560,7 @@ angular.module('ngMap', []);
     return renderer;
   };
 
-  var directions = function(Attr2Options, $timeout) {
+  var directions = function(Attr2Options, $timeout, NavigatorGeolocation) {
     var parser = Attr2Options;
     var directionsService = new google.maps.DirectionsService();
 
@@ -29307,7 +29577,12 @@ angular.module('ngMap', []);
         (validKeys.indexOf(key) === -1) && (delete request[key]);
       }
 
-      if (request.origin && request.destination) {
+      if(request.waypoints) {
+        // Check fo valid values
+        if(request.waypoints == "[]" || request.waypoints == "")  delete request.waypoints;
+      }
+
+      var showDirections = function(request) {
         void 0;
         directionsService.route(request, function(response, status) {
           if (status == google.maps.DirectionsStatus.OK) {
@@ -29316,6 +29591,22 @@ angular.module('ngMap', []);
             });
           }
         });
+      };
+
+      if (request.origin && request.destination) {
+        if (request.origin == 'current-location') {
+          NavigatorGeolocation.getCurrentPosition().then(function(ll) {
+            request.origin = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
+            showDirections(request);
+          });
+        } else if (request.destination == 'current-location') {
+          NavigatorGeolocation.getCurrentPosition().then(function(ll) {
+            request.destination = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
+            showDirections(request);
+          });
+        } else {
+          showDirections(request);
+        }
       } 
     };
 
@@ -29332,7 +29623,13 @@ angular.module('ngMap', []);
       attrsToObserve.forEach(function(attrName) {
         (function(attrName) {
           attrs.$observe(attrName, function(val) {
-            if (options[attrName] !== val) { //apply only if changed
+            if (attrName == 'panel') {
+              $timeout(function(){
+                var panel = document.getElementById(val) || document.querySelector(val);
+                void 0;
+                panel && renderer.setPanel(panel);
+              });
+            } else if (options[attrName] !== val) { //apply only if changed
               var optionValue = parser.toOptionValue(val, {key: attrName});
               void 0;
               options[attrName] = optionValue;
@@ -29356,7 +29653,7 @@ angular.module('ngMap', []);
       link: linkFunc
     }
   }; // var directions
-  directions.$inject = ['Attr2Options', '$timeout'];
+  directions.$inject = ['Attr2Options', '$timeout', 'NavigatorGeolocation'];
 
   angular.module('ngMap').directive('directions', directions);
 })();
@@ -29365,7 +29662,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name drawing-manager
- * @requires Attr2Options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -29528,7 +29825,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name heatmap-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -29580,8 +29877,8 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name info-window
- * @requires Attr2Options
- * @requires $compile
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $compile {service} $compile service
  * @description
  *   Defines infoWindow and provides compile method
  *
@@ -29589,12 +29886,12 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element
  *
- * @param {Boolean} visible Indicates to show it when map is initialized
- * @param {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
- * @param {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
- * @param {String} &lt;InfoWindowOption> Any InfoWindow options,
- *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
- * @param {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {Boolean} visible Indicates to show it when map is initialized
+ * @attr {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
+ * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
+ * @attr {String} &lt;InfoWindowOption> Any InfoWindow options,
+ *       https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
+ * @attr {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage:
  *   <map MAP_ATTRIBUTES>
@@ -29747,16 +30044,16 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name kml-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   renders Kml layer on a map
  *   Requires:  map directive
  *   Restrict To:  Element
  *
- * @param {Url} url url of the kml layer
- * @param {KmlLayerOptions} KmlLayerOptions
+ * @attr {Url} url url of the kml layer
+ * @attr {KmlLayerOptions} KmlLayerOptions
  *   (https://developers.google.com/maps/documentation/javascript/reference#KmlLayerOptions)  
- * @param {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
  *   <map MAP_ATTRIBUTES>
@@ -29808,12 +30105,13 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name map-data
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   set map data
  *   Requires:  map directive
  *   Restrict To:  Element
  *
- * @param {String} method-name, run map.data[method-name] with attribute value
+ * @wn {String} method-name, run map.data[method-name] with attribute value
  * @example
  * Example: 
  *
@@ -29868,21 +30166,33 @@ angular.module('ngMap', []);
 
 /**
  * @ngdoc directive
- * @name lazy-load
- * @requires Attr2Options 
+ * @name map-lazy-load
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
- *   Requires: Delay the initialization of directive until required .js loads
+ *   Requires: Delay the initialization of map directive until the map is ready to be rendered
  *   Restrict To: Attribute 
  *
- * @param {String} lazy-load
-      script source file location
- *    example:  
- *      'http://maps.googlecom/maps/api/js'   
+ * @attr {String} map-lazy-load
+      Maps api script source file location.
+ *    Example:  
+ *      'https://maps.google.com/maps/api/js'   
+ * @attr {String} map-lazy-load-params
+     Maps api script source file location via angular scope variable.
+     Also requires the map-lazy-load attribute to be present in the directive.
+     Example: In your controller, set 
+       $scope.googleMapsURL = 'https://maps.google.com/maps/api/js?v=3.20&client=XXXXXenter-api-key-hereXXXX'
 
  * @example
  * Example: 
  *
  *   <div map-lazy-load="http://maps.google.com/maps/api/js">
+ *     <map center="Brampton" zoom="10">
+ *       <marker position="Brampton"></marker>
+ *     </map>
+ *   </div>
+ *
+ *   <div map-lazy-load="http://maps.google.com/maps/api/js" 
+ *        map-lazy-load-params="{{googleMapsUrl}}">
  *     <map center="Brampton" zoom="10">
  *       <marker position="Brampton"></marker>
  *     </map>
@@ -29893,6 +30203,8 @@ angular.module('ngMap', []);
   var $timeout, $compile, src, savedHtml;
 
   var preLinkFunc = function(scope, element, attrs) {
+    var mapsUrl = attrs.mapLazyLoadParams || attrs.mapLazyLoad;    
+    
     window.lazyLoadCallback = function() {
       void 0;
       $timeout(function() { /* give some time to load */
@@ -29903,7 +30215,8 @@ angular.module('ngMap', []);
 
     if(window.google === undefined || window.google.maps === undefined) {
       var scriptEl = document.createElement('script');
-      scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
+      void 0;
+      scriptEl.src = mapsUrl + (mapsUrl.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
       document.body.appendChild(scriptEl);
     } else {
       element.html(savedHtml);
@@ -29920,7 +30233,7 @@ angular.module('ngMap', []);
     /**
      * if already loaded, stop processing it
      */
-    if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
+    if (document.querySelector('script[src="'+src+(src.indexOf('?') > -1 ? '&' : '?')+'callback=lazyLoadCallback"]')) {
       return false;
     }
 
@@ -29944,7 +30257,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name map-type
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -29995,7 +30308,7 @@ angular.module('ngMap', []);
  * @ngdoc directive
  * @memberof ngMap
  * @name map
- * @requires Attr2Options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *   Implementation of {@link MapController}
  *   Initialize a Google map within a `<div>` tag with given options and register events
@@ -30008,20 +30321,20 @@ angular.module('ngMap', []);
  *   Restrict To:
  *     Element
  *
- * @param {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
- * @param {Array} geo-fallback-center
+ * @attr {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
+ * @attr {Array} geo-fallback-center
  *    The center of map incase geolocation failed. i.e. [0,0]
- * @param {Boolean} zoom-to-include-markers
+ * @attr {Boolean} zoom-to-include-markers
  *    When true, map boundary will be changed automatially to include all markers when initialized
- * @param {Boolean} default-style
+ * @attr {Boolean} default-style
  *    When false, the default styling, `display:block;height:300px`, will be ignored.
- * @param {String} init-event The name of event to initialize this map.
+ * @attr {String} init-event The name of event to initialize this map.
  *    If this option is given, the map won't be initialized until the event is received.
  *    To invoke the event, use $scope.$emit or $scope.$broacast.
  *    i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map>
- * @param {String} &lt;MapOption> Any Google map options,
+ * @attr {String} &lt;MapOption> Any Google map options,
  *    https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
- * @param {String} &lt;MapEvent> Any Google map events,
+ * @attr {String} &lt;MapEvent> Any Google map events,
  *    https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
  * @example
  * Usage:
@@ -30212,7 +30525,11 @@ angular.module('ngMap', []);
   /**
    * @ngdoc controller
    * @name MapController
-   * @requires $scope
+   * @param $scope {service}
+   * @param $q {service} promise Q
+   * @param NavigatorGeolocation {service}
+   * @param GeoCoder {service}
+   * @param Attr2Options {service} convert html attribute to Gogole map api options
    * @property {Hash} controls collection of Controls initiated within `map` directive
    * @property {Hash} markers collection of Markers initiated within `map` directive
    * @property {Hash} shapes collection of shapes initiated within `map` directive
@@ -30440,8 +30757,8 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name marker
- * @requires Attr2Options 
- * @requires NavigatorGeolocation
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param NavigatorGeolocation It is used to find the current location
  * @description 
  *   Draw a Google map marker on a map with given options and register events  
  *   
@@ -30449,15 +30766,15 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element 
  *
- * @param {String} position address, 'current', or [latitude, longitude]  
+ * @attr {String} position address, 'current', or [latitude, longitude]  
  *    example:  
  *      '1600 Pennsylvania Ave, 20500  Washingtion DC',   
  *      'current position',  
  *      '[40.74, -74.18]'  
- * @param {Boolean} centered if set, map will be centered with this marker
- * @param {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showStoreInfo()"
- * @param {String} &lt;MarkerOption> Any Marker options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MarkerOptions  
- * @param {String} &lt;MapEvent> Any Marker events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {Boolean} centered if set, map will be centered with this marker
+ * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showStoreInfo()"
+ * @attr {String} &lt;MarkerOption> [Any Marker options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#MarkerOptions) 
+ * @attr {String} &lt;MapEvent> [Any Marker events](https://developers.google.com/maps/documentation/javascript/reference)
  * @example
  * Usage: 
  *   <map MAP_ATTRIBUTES>
@@ -30564,7 +30881,8 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name overlay-map-type
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $window {service} 
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -30617,14 +30935,13 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name places-auto-complete
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Provides address auto complete feature to an input element
  *   Requires: input tag
  *   Restrict To: Attribute
  *
- * @param {AutoCompleteOptions} Any AutocompleteOptions
- *    https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions
+ * @attr {AutoCompleteOptions} [Any AutocompleteOptions](https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions)
  *
  * @example
  * Example: 
@@ -30681,7 +30998,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name shape
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Initialize a Google map shape in map with given options and register events  
  *   The shapes are:
@@ -30695,15 +31012,15 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element
  *
- * @param {Boolean} centered if set, map will be centered with this marker
- * @param {Expression} geo-callback if shape is a circle and the center is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
- * @param {String} &lt;OPTIONS>
+ * @attr {Boolean} centered if set, map will be centered with this marker
+ * @attr {Expression} geo-callback if shape is a circle and the center is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
+ * @attr {String} &lt;OPTIONS>
  *   For circle, [any circle options](https://developers.google.com/maps/documentation/javascript/reference#CircleOptions)  
  *   For polygon, [any polygon options](https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions)  
  *   For polyline, [any polyline options](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)   
  *   For rectangle, [any rectangle options](https://developers.google.com/maps/documentation/javascript/reference#RectangleOptions)   
  *   For image, [any groundOverlay options](https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions)   
- * @param {String} &lt;MapEvent> Any Shape events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {String} &lt;MapEvent> [Any Shape events](https://developers.google.com/maps/documentation/javascript/reference)
  * @example
  * Usage: 
  *   <map MAP_ATTRIBUTES>
@@ -30855,16 +31172,14 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name streetview-panorama
- * @requires Attr2Options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
  *
- * @param container Optional, id or css selector, if given, streetview will be in the given html element
- * @param {String} &lt;StreetViewPanoramaOption> Any Google StreetViewPanorama options, 
- *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions
- * @param {String} &lt;StreetViewPanoramaEvent> Any Google StreetViewPanorama events, 
- *        https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama 
+ * @attr container Optional, id or css selector, if given, streetview will be in the given html element
+ * @attr {String} &lt;StreetViewPanoramaOption> [Any Google StreetViewPanorama options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions)
+ * @attr {String} &lt;StreetViewPanoramaEvent> [Any Google StreetViewPanorama events](https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama)
  *
  * @example
  *   <map zoom="11" center="[40.688738,-74.043871]" >
@@ -30952,7 +31267,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name traffic-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -31003,7 +31318,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name transit-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -31054,7 +31369,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name weather-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -31107,15 +31422,26 @@ var app = angular.module('pickupgame', ['ngMap','geolocation']);
 app.controller('HomeController',function($scope,geolocation,$http){
   $scope.lat = 0;
   $scope.lng = 0;
-  $scope.games = [];
+  $scope.game = {};
+  $scope.games = function(){
+    $http.get('/game')
+    .success(function(data){
+      console.log(data);
+      $scope.games = data;
+    });
+  };
   geolocation.getLocation().then(function(data){
       $scope.lat = data.coords.latitude;
       $scope.lng= data.coords.longitude;
+      console.log($scope.game);
     });
-  $scope.getGames = function(){
-    $http.get('/game')
+
+  $scope.addGame = function(){
+    console.log('POST GAME FUNCTION INITIATED......');
+    $http.post('/game', {name:$scope.game.name, description:$scope.game.description})
     .success(function(data){
-      $scope.games = data;
+      console.log(data);
+      $scope.games.push(data);
     });
   };
 });

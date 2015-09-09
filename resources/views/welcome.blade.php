@@ -10,11 +10,14 @@
 <info-window id="@{{bar+game.id}}" visible-on-marker="@{{game.id}}">
 <div ng-non-bindable="">
 <div id="siteNotice"></div>
-<h1 id="firstHeading" class="firstHeading">@{{game.id}}</h1>
+<h1 id="firstHeading" class="firstHeading">@{{game.name}}</h1>
 <div id="bodyContent">
 <p>
-  Created: @{{game.created_at}}
-   <a href="http://maps.google.com/?saddr=@{{lat}},@{{lng}}&daddr=@{{game.lat}},@{{game.lng}}" class="btn btn-info">Get Directions</a>
+	<b>Description: </b>@{{game.description}} <br/>
+  <b>Created:</b> @{{game.created_at}} <br/>
+
+   <a href="http://maps.google.com/?saddr=@{{lat}},@{{lng}}&daddr=@{{game.lat}},@{{game.lng}}" class="btn btn-info">Get Directions</a> 
+
 </p>
 </div>
 </div>
@@ -31,8 +34,11 @@
 <form role="form">
   <div class="form-group">
     <label for="name">Name</label>
-    <input  class="form-control" id="name">
+    <input  class="form-control" ng-scope="game.name" id="name" placeholder="Give your game an unique name!">
+    <label for="desciption">Description</label>
+    <textarea class="form-control" ng-scope="game.description" id="description" 
+    placeholder="In a few words describe your game, any special rules, etc."></textarea>
   </div>
-  <button type="submit" class="btn btn-success">Add Game</button>
+  <button type="button" onClick="addGame()" class="btn btn-success">Add Game</button>
 </form>
 @endsection
