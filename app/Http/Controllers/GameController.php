@@ -44,6 +44,7 @@ class GameController extends Controller
             'description' => $request->input('description')
             ]);
          event(App\Events\GameCreated($game));
+         return $event;
     }
 
     /**
